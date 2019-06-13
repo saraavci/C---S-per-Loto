@@ -1,0 +1,335 @@
+#include <stdio.h>
+#include <stdlib.h>
+void sayiDizisiOlustur(int sayi[6], int hangiSayi[54])
+{/*cekilis icin sayi atayan ve hangi sayinin kacinci kez atandigini sayan fonksiyon*/
+    int i, j;
+    srand(time(NULL));
+    for(i=0; i<6; i++)
+    {
+        sayi[i] = 1 + rand()%54;
+        for(j=0; j<i; j++)
+        {
+            while(sayi[i] == sayi[j])
+            {
+                sayi[i] = 1 + rand()%54;
+            }
+        }
+        hangiSayi[sayi[i]]++;
+    }
+}
+void tahminDizisiOlustur(int tahmin[6], int tercihSayi[54])
+{/*kullanicinin sectigi sayileri tahmin dizsine atayan ve hangi sayilari kacinciya girdigini sayan fonksiyon*/
+    int i, j;
+    for(i=1; i<7; i++)
+    {
+        printf("%d. tahmininizi girin:\n",i);
+        scanf("%d", &tahmin[i]);
+        while(tahmin[i]<2 || tahmin[i]>54)
+        {
+            printf("yanlis deger girdiniz lutfen 1 ile 54 arasinda deger girin: \n");
+            scanf("%d", &tahmin[i]);
+        }
+        for(j=1; j<i; j++)
+        {
+            while(tahmin[i] == tahmin[j])
+            {
+                printf("ayni sayilari giremezsiniz. lutfen farkli bir deger girin:\n");
+                scanf("%d", &tahmin[j]);
+            }
+            tercihSayi[tahmin[i]] += 1;
+        }
+    }
+}
+void dizileriSirala(int sayi[6], int tahmin[6])
+{/*programin sectigi ve kullanicinin sectigi sayilari siralayan ve ayni zamanda ekrana yazdiran fonksiyon*/
+    int i, j, kucukEleman;
+    for(i=0; i<6; i++)
+    {
+        for(j=i+1; j<6; j++)
+        {
+            if(sayi[i]>sayi[j])
+            {
+                kucukEleman = sayi[j];
+                sayi[j] = sayi[i];
+                sayi[i] = kucukEleman;
+            }
+        }
+    }
+    printf("loto'da cikan sayilar :\n");
+    printf("%d%10d%10d%10d%10d%10d\n", sayi[0], sayi[1], sayi[2], sayi[3], sayi[4], sayi[5]);
+
+    for(i=0; i<6; i++)
+    {
+        for(j=i+1; j<6; j++)
+        {
+            if(tahmin[i]>tahmin[j])
+            {
+                kucukEleman = tahmin[j];
+                tahmin[j] = tahmin[i];
+                tahmin[i] = kucukEleman;
+            }
+        }
+    }
+    printf("tahmin ettiginiz sayilar:\n");
+    printf("%d%10d%10d%10d%10d%10d\n", tahmin[0], tahmin[1], tahmin[2], tahmin[3], tahmin[4], tahmin[5]);
+}
+int dizileriKiyasla(int sayi[6], int tahmin[6])
+{/*programin atadigi ve kullanicinin girdigi degerleri kiyaslayan ve kac dogru tahmin oldugunu donduren fonksiyon*/
+    int i,j;
+    int dogruTahmin=0;
+    for(i=0; i<6; i++)
+    {
+        for(j=0; j<6; j++)
+        {
+            if(sayi[i] == tahmin[j])
+            {
+                dogruTahmin++;
+            }
+        }
+    }
+    printf("doğru tahmin sayisi %d oldu.\n", dogruTahmin);
+    return dogruTahmin;
+}
+int kazanilanOduller(int dogruTahmin, int puan, int odulSay[4][2])
+{/*kullanicinin dogru tahminine gore odulu ve bir sonraki puanini hasaplayan ayni zamanda bu odulu kac kez kazandigini sayan fonksiyon*/
+    if(dogruTahmin<3)
+    {
+        printf("yeteri kadar sayi tahmin edemediginiz icin odul alamadiniz.\n");
+    }
+    else(dogruTahmin>=3);
+    {
+        switch(dogruTahmin)
+        {
+            case 3:
+            {
+                printf("tebrikler! 1 puan kazandiniz.\n");
+                puan = puan + 1;
+                odulSay[1][2] += 1;
+                break;
+            }
+            case 4:
+            {
+                printf("tebrikler!3 puan kazandiniz.\n");
+                puan = puan + 3;
+                odulSay[2][2] += 1;
+                break;
+            }
+            case 5:
+            {
+                printf("tebrik!10 puan kazandin.\n");
+                puan = puan + 10;
+                odulSay[3][2] += 1;
+                break;
+            }
+            case 6:
+            {
+                printf("tebrik!50 puan kazandin.\n");
+                puan = puan + 50;
+                odulSay[4][2] += 1;
+                break;
+            }
+        }
+
+    }
+    return puan;
+}
+void cikanSayilariYazanFonk(int hangiSayi[54])
+{/*1. istatistik: cekiliste cikan sayilarin kac kez ciktigini yazdiran fonksiyon*/
+    int i;
+    printf("cekilis sayilari    kac kez cikti\n");
+    printf("________________    _____________\n\n");
+    for(i=1; i<55; i++)
+    {
+        printf("%10d%20d\n", i, hangiSayi[i]);
+    }
+}
+void enCokCikanSayilar(int hangiSayi[54])
+{/*2. istatistik: cekiliste en cok hangi sayinin ciktigini one yazdiran fonksiyon*/
+    int i, j;
+    int e[2]={0};/* e gecici dizisini siralama icin kullandim*/
+    for(i=1; i<54; i++)
+    {
+        for(j=i+1; j<55; j++)
+        {
+            if(hangiSayi[i]<hangiSayi[j])
+            {
+                e[1]=i;
+                e[2]=hangiSayi[i];
+
+                hangiSayi[i]=hangiSayi[j];
+
+                j=e[1];
+                hangiSayi[j]=e[2];
+            }
+        }
+    }
+    printf(" sayi    kac kez cikti\n");
+    printf("______   _____________\n");
+    for(i=1; i<4; i++)
+    {
+        printf("%d%10d\n", i, hangiSayi[i]);
+    }
+}
+void odulYazanFonk(int odulSay[4][2])
+{/*3. istatistik: hangi odulun kac kez ciktigini yazan fonksiyon*/
+    int i, j;
+    printf("  odul(puan)     kac kez kazandiniz\n");
+    printf("____________    __________________\n");
+    for(i=0; i<4; i++)
+    {
+        for(j=0; j<2; j++)
+        {
+            printf("%5d", odulSay[i][j]);
+        }
+        printf("\n");
+    }
+}
+void enCokTercihEdilenTahminler(int tercihSayi[54])
+{/*4.istatistik: kullanicinin en cok tercih ettigi 3 sayiyi yazdiran fonksiyon*/
+    int i, j;
+    int e[2]={0};/* e gecici dizisini siralama icin kullandim*/
+    for(i=1; i<54; i++)
+    {
+        for(j=i+1; j<55; j++)
+        {
+            if(tercihSayi[i]<tercihSayi[j])
+            {
+                e[1]=i;
+                e[2]=tercihSayi[i];
+
+                i=j;
+                tercihSayi[i]=tercihSayi[j];
+
+                j=e[1];
+                tercihSayi[j]=e[2];
+            }
+        }
+    }
+    printf("  sayi    kac kez cikti\n");
+    printf("_______   _____________\n");
+    for(i=1; i<4; i++)
+    {
+        printf("\n%d%10d", i, tercihSayi[i]);
+    }
+}
+int istatistik(int hangiSayiCikti[54], int odulSay[4][2], int tercihSayi[54])
+{
+    int i, secenek;
+    char karar;
+    printf("___ISTATISTIK MENUSU___\n"
+           "1.cekiliste hangi sayilar kac kez cikti\n"
+           "2.cekiliste cikan sayilarin kac kez ciktigina göre siralamasi\n"
+           "3.hangi odulleri kac kez kazandin\n"
+           "4.en cok tercih ettigin uc sayi\n"
+           "5.cıkıs\n");
+    scanf("%d", &secenek);
+    while(secenek<1 || secenek >5)
+        {
+            printf("Yanlis deger girdiniz. Lutfen tekrar deneyin.\n");
+            printf("seceneginiz nedir:\n");
+            scanf("%d", &secenek);
+        }
+    switch(secenek)
+    {
+        case 1:
+        {
+            cikanSayilariYazanFonk(hangiSayiCikti);
+            break;
+        }
+        case 2:
+        {
+            enCokCikanSayilar(hangiSayiCikti);
+            break;
+        }
+        case 3:
+        {
+            odulYazanFonk(odulSay);
+            break;
+        }
+        case 4:
+        {
+            enCokTercihEdilenTahminler(tercihSayi);
+            break;
+        }
+        case 5:
+        {
+            printf("lutfen bekleyin. Yonlendiriliyorsunuz.\n");
+            karar = 'h';
+            return karar;
+        }
+    }
+}
+
+int main()
+{
+    int cekirdekDegeri, tercih, dogruTahmin, i, j;
+    char karar = 'e';
+    int puan = 0;
+    int sayi[6]={0};
+    int tahmin[6]={0};
+    int hangiSayiCikti[55]={0};
+    int odulSay[4][2]={0};
+    int tercihSayi[54]={0};
+
+    printf("____SUPER LOTO____\n\n");
+    printf("rasgele sayı üreticisi için çekirdek değerini girin:\n");
+    scanf("%d", &cekirdekDegeri);
+    srand(cekirdekDegeri);
+    do
+    {
+        printf("ANA MENU\n"
+                "1. super loto oynamaya basla\n"
+                "2. istatistikleri guruntuleme\n"
+                "3. cıkıs\n"
+                "toplam odulunuz %d puandir.\n"
+                "lutfen seciminizi girin: \n",puan);
+        scanf("%d", &tercih);
+        while(tercih<1 || tercih >3)
+        {
+            printf("Yanlis deger girdiniz. Lutfen tekrar deneyin.\n");
+            printf("seceneginiz nedir:\n");
+            scanf("%d", &tercih);
+        }
+        switch(tercih)
+        {
+            case 1:
+            {
+                do
+                {
+                    sayiDizisiOlustur(sayi, hangiSayiCikti);
+                    tahminDizisiOlustur(tahmin, tercihSayi);
+                    dizileriSirala(sayi,tahmin);
+                    dogruTahmin = dizileriKiyasla(sayi,tahmin);
+                    puan = kazanilanOduller(dogruTahmin, puan, odulSay);
+
+                    printf("suan ki puaniniz: %d\n", puan);
+                    printf("oyuna devam etmek icin 'e' ana menuye donmek 'h' girin: \n");
+                    scanf(" %c", &karar);
+                }while(karar == 'e');
+                break;
+            }
+            case 2:
+            {
+                do
+                {
+                    karar = istatistik(hangiSayiCikti, odulSay, tercihSayi);
+                    printf("istatistik menusune dönme icin 'e' ana menuye donmek 'h' girin: \n");
+                    scanf(" %c", &karar);
+                }while(karar == 'e');
+
+                break;
+            }
+            case 3:
+            {
+                printf("cıkmak icin e ana menu icin h girin:\n");
+                scanf(" %c", &karar);
+                if(karar == 'e')
+                {
+                    printf("____GULE GULE____");
+                    return 0;
+                }
+                break;
+            }
+        }
+    }while(karar == 'h');
+}
